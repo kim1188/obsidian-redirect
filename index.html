@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Open in Obsidian…</title>
+<script>
+  // Notion은 obsidian:// 를 링크화하지 않으므로, 이 https 페이지를 거쳐 redirect.
+  // 보안: obsidian:// 대상만 허용(오픈 리다이렉트 방지).
+  (function () {
+    try {
+      var u = new URLSearchParams(window.location.search).get('u') || '';
+      if (u.indexOf('obsidian://') === 0) {
+        window.location.replace(u);
+        return;
+      }
+    } catch (e) {}
+    window.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('msg').textContent =
+        '유효한 obsidian:// 대상이 없습니다.';
+    });
+  })();
+</script>
+<style>
+  body { font: 15px -apple-system, system-ui, sans-serif; color:#444;
+         display:flex; min-height:80vh; align-items:center; justify-content:center; }
+</style>
+</head>
+<body>
+  <p id="msg">Obsidian으로 여는 중… 안 열리면 브라우저가 "Obsidian에서 열기"를 허용하도록 해주세요.</p>
+</body>
+</html>
