@@ -5,29 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Open in Obsidian…</title>
-<script>
-  // Notion은 obsidian:// 를 링크화하지 않으므로, 이 https 페이지를 거쳐 redirect.
-  // 보안: obsidian:// 대상만 허용(오픈 리다이렉트 방지).
-  (function () {
-    try {
-      var u = new URLSearchParams(window.location.search).get('u') || '';
-      if (u.indexOf('obsidian://') === 0) {
-        window.location.replace(u);
-        return;
-      }
-    } catch (e) {}
-    window.addEventListener('DOMContentLoaded', function () {
-      document.getElementById('msg').textContent =
-        '유효한 obsidian:// 대상이 없습니다.';
-    });
-  })();
-</script>
 <style>
-  body { font: 15px -apple-system, system-ui, sans-serif; color:#444;
-         display:flex; min-height:80vh; align-items:center; justify-content:center; }
+  body { font: 15px -apple-system, system-ui, sans-serif; color:#555;
+         display:flex; min-height:80vh; align-items:center; justify-content:center;
+         text-align:center; padding:1rem; }
 </style>
 </head>
 <body>
-  <p id="msg">Obsidian으로 여는 중… 안 열리면 브라우저가 "Obsidian에서 열기"를 허용하도록 해주세요.</p>
+  <p id="msg">Obsidian으로 여는 중…</p>
+  <script>
+    // Notion은 obsidian:// 를 링크화 안 하므로 이 https 페이지를 거쳐 redirect.
+    // 보안: obsidian:// 대상만 허용(오픈 리다이렉트 방지).
+    (function () {
+      function msg(t) { var e = document.getElementById('msg'); if (e) e.textContent = t; }
+      var u;
+      try { u = new URLSearchParams(window.location.search).get('u') || ''; } catch (e) { u = ''; }
+      if (u.indexOf('obsidian://') !== 0) { msg('유효한 obsidian:// 대상이 없습니다.'); return; }
+
+      // obsidian:// 실행. location.replace는 history 항목을 안 늘리고(=탭 자동닫기 허용 조건
+      // history.length===1 유지), 외부 스킴이라 top frame이 실제 이동하지 않아 이후 코드도 동작.
+      window.location.replace(u);
+
+      // 탭 자동 닫기 시도: Chrome 등은 history.length===1 탭이면 허용. 막히면(Safari 등) 안내.
+      setTimeout(function () { try { window.close(); } catch (e) {} }, 500);
+      setTimeout(function () { msg('Obsidian으로 열었습니다 — 이 탭은 닫으셔도 됩니다.'); }, 900);
+    })();
+  </script>
 </body>
 </html>
